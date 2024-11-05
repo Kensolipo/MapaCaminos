@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/RoderaSur_1.js"></script>
+        <script src="data/CalleLangosta_2.js"></script>
+        <script src="data/CalleOficinas_3.js"></script>
+        <script src="data/CalleRythmia_4.js"></script>
+        <script src="data/RoderaEste_5.js"></script>
+        <script src="data/CalleClubdePlaya_6.js"></script>
+        <script src="data/CalleEntradaPrincipal_7.js"></script>
+        <script src="data/RoderaNorte_8.js"></script>
+        <script src="data/RoderaOeste_9.js"></script>
+        <script src="data/CalleJW_10.js"></script>
+        <script src="data/CaminoAdoquinClubdePlaya_11.js"></script>
+        <script src="data/CaminoadoquinJW_12.js"></script>
+        <script src="data/CaminoadoquinAlmendros_13.js"></script>
+        <script src="data/CaminoAdoquinGolondrinas_14.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[10.232076116070454,-85.87934792631059],[10.283718487276708,-85.78316830232454]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Mapas_0');
+        map.getPane('pane_Mapas_0').style.zIndex = 400;
+        var layer_Mapas_0 = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+            pane: 'pane_Mapas_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_Mapas_0;
+        map.addLayer(layer_Mapas_0);
+        function pop_RoderaSur_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RoderaSur_1_0() {
+            return {
+                pane: 'pane_RoderaSur_1',
+                opacity: 1,
+                color: 'rgba(231,221,33,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RoderaSur_1');
+        map.getPane('pane_RoderaSur_1').style.zIndex = 401;
+        map.getPane('pane_RoderaSur_1').style['mix-blend-mode'] = 'normal';
+        var layer_RoderaSur_1 = new L.geoJson(json_RoderaSur_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RoderaSur_1',
+            layerName: 'layer_RoderaSur_1',
+            pane: 'pane_RoderaSur_1',
+            onEachFeature: pop_RoderaSur_1,
+            style: style_RoderaSur_1_0,
+        });
+        bounds_group.addLayer(layer_RoderaSur_1);
+        map.addLayer(layer_RoderaSur_1);
+        function pop_CalleLangosta_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CalleLangosta_2_0() {
+            return {
+                pane: 'pane_CalleLangosta_2',
+                opacity: 1,
+                color: 'rgba(190,207,80,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CalleLangosta_2');
+        map.getPane('pane_CalleLangosta_2').style.zIndex = 402;
+        map.getPane('pane_CalleLangosta_2').style['mix-blend-mode'] = 'normal';
+        var layer_CalleLangosta_2 = new L.geoJson(json_CalleLangosta_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CalleLangosta_2',
+            layerName: 'layer_CalleLangosta_2',
+            pane: 'pane_CalleLangosta_2',
+            onEachFeature: pop_CalleLangosta_2,
+            style: style_CalleLangosta_2_0,
+        });
+        bounds_group.addLayer(layer_CalleLangosta_2);
+        map.addLayer(layer_CalleLangosta_2);
+        function pop_CalleOficinas_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CalleOficinas_3_0() {
+            return {
+                pane: 'pane_CalleOficinas_3',
+                opacity: 1,
+                color: 'rgba(229,54,185,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CalleOficinas_3');
+        map.getPane('pane_CalleOficinas_3').style.zIndex = 403;
+        map.getPane('pane_CalleOficinas_3').style['mix-blend-mode'] = 'normal';
+        var layer_CalleOficinas_3 = new L.geoJson(json_CalleOficinas_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CalleOficinas_3',
+            layerName: 'layer_CalleOficinas_3',
+            pane: 'pane_CalleOficinas_3',
+            onEachFeature: pop_CalleOficinas_3,
+            style: style_CalleOficinas_3_0,
+        });
+        bounds_group.addLayer(layer_CalleOficinas_3);
+        map.addLayer(layer_CalleOficinas_3);
+        function pop_CalleRythmia_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CalleRythmia_4_0() {
+            return {
+                pane: 'pane_CalleRythmia_4',
+                opacity: 1,
+                color: 'rgba(190,178,151,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CalleRythmia_4');
+        map.getPane('pane_CalleRythmia_4').style.zIndex = 404;
+        map.getPane('pane_CalleRythmia_4').style['mix-blend-mode'] = 'normal';
+        var layer_CalleRythmia_4 = new L.geoJson(json_CalleRythmia_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CalleRythmia_4',
+            layerName: 'layer_CalleRythmia_4',
+            pane: 'pane_CalleRythmia_4',
+            onEachFeature: pop_CalleRythmia_4,
+            style: style_CalleRythmia_4_0,
+        });
+        bounds_group.addLayer(layer_CalleRythmia_4);
+        map.addLayer(layer_CalleRythmia_4);
+        function pop_RoderaEste_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RoderaEste_5_0() {
+            return {
+                pane: 'pane_RoderaEste_5',
+                opacity: 1,
+                color: 'rgba(141,90,153,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RoderaEste_5');
+        map.getPane('pane_RoderaEste_5').style.zIndex = 405;
+        map.getPane('pane_RoderaEste_5').style['mix-blend-mode'] = 'normal';
+        var layer_RoderaEste_5 = new L.geoJson(json_RoderaEste_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RoderaEste_5',
+            layerName: 'layer_RoderaEste_5',
+            pane: 'pane_RoderaEste_5',
+            onEachFeature: pop_RoderaEste_5,
+            style: style_RoderaEste_5_0,
+        });
+        bounds_group.addLayer(layer_RoderaEste_5);
+        map.addLayer(layer_RoderaEste_5);
+        function pop_CalleClubdePlaya_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CalleClubdePlaya_6_0() {
+            return {
+                pane: 'pane_CalleClubdePlaya_6',
+                opacity: 1,
+                color: 'rgba(255,158,23,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CalleClubdePlaya_6');
+        map.getPane('pane_CalleClubdePlaya_6').style.zIndex = 406;
+        map.getPane('pane_CalleClubdePlaya_6').style['mix-blend-mode'] = 'normal';
+        var layer_CalleClubdePlaya_6 = new L.geoJson(json_CalleClubdePlaya_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CalleClubdePlaya_6',
+            layerName: 'layer_CalleClubdePlaya_6',
+            pane: 'pane_CalleClubdePlaya_6',
+            onEachFeature: pop_CalleClubdePlaya_6,
+            style: style_CalleClubdePlaya_6_0,
+        });
+        bounds_group.addLayer(layer_CalleClubdePlaya_6);
+        map.addLayer(layer_CalleClubdePlaya_6);
+        function pop_CalleEntradaPrincipal_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CalleEntradaPrincipal_7_0() {
+            return {
+                pane: 'pane_CalleEntradaPrincipal_7',
+                opacity: 1,
+                color: 'rgba(72,123,182,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CalleEntradaPrincipal_7');
+        map.getPane('pane_CalleEntradaPrincipal_7').style.zIndex = 407;
+        map.getPane('pane_CalleEntradaPrincipal_7').style['mix-blend-mode'] = 'normal';
+        var layer_CalleEntradaPrincipal_7 = new L.geoJson(json_CalleEntradaPrincipal_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CalleEntradaPrincipal_7',
+            layerName: 'layer_CalleEntradaPrincipal_7',
+            pane: 'pane_CalleEntradaPrincipal_7',
+            onEachFeature: pop_CalleEntradaPrincipal_7,
+            style: style_CalleEntradaPrincipal_7_0,
+        });
+        bounds_group.addLayer(layer_CalleEntradaPrincipal_7);
+        map.addLayer(layer_CalleEntradaPrincipal_7);
+        function pop_RoderaNorte_8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RoderaNorte_8_0() {
+            return {
+                pane: 'pane_RoderaNorte_8',
+                opacity: 1,
+                color: 'rgba(227,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RoderaNorte_8');
+        map.getPane('pane_RoderaNorte_8').style.zIndex = 408;
+        map.getPane('pane_RoderaNorte_8').style['mix-blend-mode'] = 'normal';
+        var layer_RoderaNorte_8 = new L.geoJson(json_RoderaNorte_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RoderaNorte_8',
+            layerName: 'layer_RoderaNorte_8',
+            pane: 'pane_RoderaNorte_8',
+            onEachFeature: pop_RoderaNorte_8,
+            style: style_RoderaNorte_8_0,
+        });
+        bounds_group.addLayer(layer_RoderaNorte_8);
+        map.addLayer(layer_RoderaNorte_8);
+        function pop_RoderaOeste_9(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RoderaOeste_9_0() {
+            return {
+                pane: 'pane_RoderaOeste_9',
+                opacity: 1,
+                color: 'rgba(51,160,44,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RoderaOeste_9');
+        map.getPane('pane_RoderaOeste_9').style.zIndex = 409;
+        map.getPane('pane_RoderaOeste_9').style['mix-blend-mode'] = 'normal';
+        var layer_RoderaOeste_9 = new L.geoJson(json_RoderaOeste_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RoderaOeste_9',
+            layerName: 'layer_RoderaOeste_9',
+            pane: 'pane_RoderaOeste_9',
+            onEachFeature: pop_RoderaOeste_9,
+            style: style_RoderaOeste_9_0,
+        });
+        bounds_group.addLayer(layer_RoderaOeste_9);
+        map.addLayer(layer_RoderaOeste_9);
+        function pop_CalleJW_10(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CalleJW_10_0() {
+            return {
+                pane: 'pane_CalleJW_10',
+                opacity: 1,
+                color: 'rgba(145,82,45,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 8.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CalleJW_10');
+        map.getPane('pane_CalleJW_10').style.zIndex = 410;
+        map.getPane('pane_CalleJW_10').style['mix-blend-mode'] = 'normal';
+        var layer_CalleJW_10 = new L.geoJson(json_CalleJW_10, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CalleJW_10',
+            layerName: 'layer_CalleJW_10',
+            pane: 'pane_CalleJW_10',
+            onEachFeature: pop_CalleJW_10,
+            style: style_CalleJW_10_0,
+        });
+        bounds_group.addLayer(layer_CalleJW_10);
+        map.addLayer(layer_CalleJW_10);
+        function pop_CaminoAdoquinClubdePlaya_11(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CaminoAdoquinClubdePlaya_11_0() {
+            return {
+                pane: 'pane_CaminoAdoquinClubdePlaya_11',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_CaminoAdoquinClubdePlaya_11_1() {
+            return {
+                pane: 'pane_CaminoAdoquinClubdePlaya_11',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CaminoAdoquinClubdePlaya_11');
+        map.getPane('pane_CaminoAdoquinClubdePlaya_11').style.zIndex = 411;
+        map.getPane('pane_CaminoAdoquinClubdePlaya_11').style['mix-blend-mode'] = 'normal';
+        var layer_CaminoAdoquinClubdePlaya_11 = new L.geoJson.multiStyle(json_CaminoAdoquinClubdePlaya_11, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CaminoAdoquinClubdePlaya_11',
+            layerName: 'layer_CaminoAdoquinClubdePlaya_11',
+            pane: 'pane_CaminoAdoquinClubdePlaya_11',
+            onEachFeature: pop_CaminoAdoquinClubdePlaya_11,
+            styles: [style_CaminoAdoquinClubdePlaya_11_0,style_CaminoAdoquinClubdePlaya_11_1,]
+        });
+        bounds_group.addLayer(layer_CaminoAdoquinClubdePlaya_11);
+        map.addLayer(layer_CaminoAdoquinClubdePlaya_11);
+        function pop_CaminoadoquinJW_12(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CaminoadoquinJW_12_0() {
+            return {
+                pane: 'pane_CaminoadoquinJW_12',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_CaminoadoquinJW_12_1() {
+            return {
+                pane: 'pane_CaminoadoquinJW_12',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CaminoadoquinJW_12');
+        map.getPane('pane_CaminoadoquinJW_12').style.zIndex = 412;
+        map.getPane('pane_CaminoadoquinJW_12').style['mix-blend-mode'] = 'normal';
+        var layer_CaminoadoquinJW_12 = new L.geoJson.multiStyle(json_CaminoadoquinJW_12, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CaminoadoquinJW_12',
+            layerName: 'layer_CaminoadoquinJW_12',
+            pane: 'pane_CaminoadoquinJW_12',
+            onEachFeature: pop_CaminoadoquinJW_12,
+            styles: [style_CaminoadoquinJW_12_0,style_CaminoadoquinJW_12_1,]
+        });
+        bounds_group.addLayer(layer_CaminoadoquinJW_12);
+        map.addLayer(layer_CaminoadoquinJW_12);
+        function pop_CaminoadoquinAlmendros_13(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CaminoadoquinAlmendros_13_0() {
+            return {
+                pane: 'pane_CaminoadoquinAlmendros_13',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_CaminoadoquinAlmendros_13_1() {
+            return {
+                pane: 'pane_CaminoadoquinAlmendros_13',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CaminoadoquinAlmendros_13');
+        map.getPane('pane_CaminoadoquinAlmendros_13').style.zIndex = 413;
+        map.getPane('pane_CaminoadoquinAlmendros_13').style['mix-blend-mode'] = 'normal';
+        var layer_CaminoadoquinAlmendros_13 = new L.geoJson.multiStyle(json_CaminoadoquinAlmendros_13, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CaminoadoquinAlmendros_13',
+            layerName: 'layer_CaminoadoquinAlmendros_13',
+            pane: 'pane_CaminoadoquinAlmendros_13',
+            onEachFeature: pop_CaminoadoquinAlmendros_13,
+            styles: [style_CaminoadoquinAlmendros_13_0,style_CaminoadoquinAlmendros_13_1,]
+        });
+        bounds_group.addLayer(layer_CaminoadoquinAlmendros_13);
+        map.addLayer(layer_CaminoadoquinAlmendros_13);
+        function pop_CaminoAdoquinGolondrinas_14(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">id</th>\
+                        <td class="visible-with-data" id="id">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Nombre</th>\
+                        <td>' + (feature.properties['Nombre'] !== null ? autolinker.link(feature.properties['Nombre'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CaminoAdoquinGolondrinas_14_0() {
+            return {
+                pane: 'pane_CaminoAdoquinGolondrinas_14',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        function style_CaminoAdoquinGolondrinas_14_1() {
+            return {
+                pane: 'pane_CaminoAdoquinGolondrinas_14',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_CaminoAdoquinGolondrinas_14');
+        map.getPane('pane_CaminoAdoquinGolondrinas_14').style.zIndex = 414;
+        map.getPane('pane_CaminoAdoquinGolondrinas_14').style['mix-blend-mode'] = 'normal';
+        var layer_CaminoAdoquinGolondrinas_14 = new L.geoJson.multiStyle(json_CaminoAdoquinGolondrinas_14, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CaminoAdoquinGolondrinas_14',
+            layerName: 'layer_CaminoAdoquinGolondrinas_14',
+            pane: 'pane_CaminoAdoquinGolondrinas_14',
+            onEachFeature: pop_CaminoAdoquinGolondrinas_14,
+            styles: [style_CaminoAdoquinGolondrinas_14_0,style_CaminoAdoquinGolondrinas_14_1,]
+        });
+        bounds_group.addLayer(layer_CaminoAdoquinGolondrinas_14);
+        map.addLayer(layer_CaminoAdoquinGolondrinas_14);
+        var overlaysTree = [
+        {label: '<b>Adoquin </b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/CaminoAdoquinGolondrinas_14.png" /> Camino Adoquin Golondrinas ', layer: layer_CaminoAdoquinGolondrinas_14},
+            {label: '<img src="legend/CaminoadoquinAlmendros_13.png" /> Camino adoquin Almendros ', layer: layer_CaminoadoquinAlmendros_13},
+            {label: '<img src="legend/CaminoadoquinJW_12.png" /> Camino adoquin JW ', layer: layer_CaminoadoquinJW_12},
+            {label: '<img src="legend/CaminoAdoquinClubdePlaya_11.png" /> Camino Adoquin Club de Playa ', layer: layer_CaminoAdoquinClubdePlaya_11},]},
+        {label: '<b>Calles</b>', selectAllCheckbox: true, children: [
+            {label: '<img src="legend/CalleJW_10.png" /> Calle JW', layer: layer_CalleJW_10},
+            {label: '<img src="legend/RoderaOeste_9.png" /> Rodera Oeste ', layer: layer_RoderaOeste_9},
+            {label: '<img src="legend/RoderaNorte_8.png" /> Rodera Norte ', layer: layer_RoderaNorte_8},
+            {label: '<img src="legend/CalleEntradaPrincipal_7.png" /> Calle Entrada Principal ', layer: layer_CalleEntradaPrincipal_7},
+            {label: '<img src="legend/CalleClubdePlaya_6.png" /> Calle Club de Playa ', layer: layer_CalleClubdePlaya_6},
+            {label: '<img src="legend/RoderaEste_5.png" /> Rodera Este', layer: layer_RoderaEste_5},
+            {label: '<img src="legend/CalleRythmia_4.png" /> Calle Rythmia ', layer: layer_CalleRythmia_4},
+            {label: '<img src="legend/CalleOficinas_3.png" /> Calle Oficinas ', layer: layer_CalleOficinas_3},
+            {label: '<img src="legend/CalleLangosta_2.png" /> Calle Langosta ', layer: layer_CalleLangosta_2},
+            {label: '<img src="legend/RoderaSur_1.png" /> Rodera Sur ', layer: layer_RoderaSur_1},]},
+            {label: "Mapas ", layer: layer_Mapas_0, radioGroup: 'bm' },]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: false, 
+        });
+        lay.addTo(map);
+		document.addEventListener("DOMContentLoaded", function() {
+            // set new Layers List height which considers toggle icon
+            function newLayersListHeight() {
+                var layerScrollbarElement = document.querySelector('.leaflet-control-layers-scrollbar');
+                if (layerScrollbarElement) {
+                    var layersListElement = document.querySelector('.leaflet-control-layers-list');
+                    var originalHeight = layersListElement.style.height 
+                        || window.getComputedStyle(layersListElement).height;
+                    var newHeight = parseFloat(originalHeight) - 50;
+                    layersListElement.style.height = newHeight + 'px';
+                }
+            }
+            var isLayersListExpanded = true;
+            var controlLayersElement = document.querySelector('.leaflet-control-layers');
+            var toggleLayerControl = document.querySelector('.leaflet-control-layers-toggle');
+            // toggle Collapsed/Expanded and apply new Layers List height
+            toggleLayerControl.addEventListener('click', function() {
+                if (isLayersListExpanded) {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                } else {
+                    controlLayersElement.classList.add('leaflet-control-layers-expanded');
+                }
+                isLayersListExpanded = !isLayersListExpanded;
+                newLayersListHeight()
+            });	
+			// apply new Layers List height if toggle layerstree
+			if (controlLayersElement) {
+				controlLayersElement.addEventListener('click', function(event) {
+					var toggleLayerHeaderPointer = event.target.closest('.leaflet-layerstree-header-pointer span');
+					if (toggleLayerHeaderPointer) {
+						newLayersListHeight();
+					}
+				});
+			}
+            // Collapsed/Expanded at Start to apply new height
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            // Collapsed touch/small screen
+            var isSmallScreen = window.innerWidth < 650;
+            if (isSmallScreen) {
+                setTimeout(function() {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                    isLayersListExpanded = !isLayersListExpanded;
+                }, 500);
+            }  
+        });       
+        setBounds();
+        var i = 0;
+        layer_RoderaSur_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_RoderaSur_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CalleLangosta_2.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CalleLangosta_2'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CalleOficinas_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CalleOficinas_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CalleRythmia_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CalleRythmia_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_RoderaEste_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_RoderaEste_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CalleClubdePlaya_6.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CalleClubdePlaya_6'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CalleEntradaPrincipal_7.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CalleEntradaPrincipal_7'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_RoderaNorte_8.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_RoderaNorte_8'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_RoderaOeste_9.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_RoderaOeste_9'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CalleJW_10.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CalleJW_10'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CaminoAdoquinClubdePlaya_11.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CaminoAdoquinClubdePlaya_11'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CaminoadoquinJW_12.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CaminoadoquinJW_12'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CaminoadoquinAlmendros_13.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CaminoadoquinAlmendros_13'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_CaminoAdoquinGolondrinas_14.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Nombre'] !== null?String('<div style="color: #323232; font-size: 10pt; font-family: \'Arial\', sans-serif;">' + layer.feature.properties['Nombre']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CaminoAdoquinGolondrinas_14'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_RoderaSur_1,layer_CalleLangosta_2,layer_CalleOficinas_3,layer_CalleRythmia_4,layer_RoderaEste_5,layer_CalleClubdePlaya_6,layer_CalleEntradaPrincipal_7,layer_RoderaNorte_8,layer_RoderaOeste_9,layer_CalleJW_10,layer_CaminoAdoquinClubdePlaya_11,layer_CaminoadoquinJW_12,layer_CaminoadoquinAlmendros_13,layer_CaminoAdoquinGolondrinas_14]);
+        map.on("zoomend", function(){
+            resetLabels([layer_RoderaSur_1,layer_CalleLangosta_2,layer_CalleOficinas_3,layer_CalleRythmia_4,layer_RoderaEste_5,layer_CalleClubdePlaya_6,layer_CalleEntradaPrincipal_7,layer_RoderaNorte_8,layer_RoderaOeste_9,layer_CalleJW_10,layer_CaminoAdoquinClubdePlaya_11,layer_CaminoadoquinJW_12,layer_CaminoadoquinAlmendros_13,layer_CaminoAdoquinGolondrinas_14]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_RoderaSur_1,layer_CalleLangosta_2,layer_CalleOficinas_3,layer_CalleRythmia_4,layer_RoderaEste_5,layer_CalleClubdePlaya_6,layer_CalleEntradaPrincipal_7,layer_RoderaNorte_8,layer_RoderaOeste_9,layer_CalleJW_10,layer_CaminoAdoquinClubdePlaya_11,layer_CaminoadoquinJW_12,layer_CaminoadoquinAlmendros_13,layer_CaminoAdoquinGolondrinas_14]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_RoderaSur_1,layer_CalleLangosta_2,layer_CalleOficinas_3,layer_CalleRythmia_4,layer_RoderaEste_5,layer_CalleClubdePlaya_6,layer_CalleEntradaPrincipal_7,layer_RoderaNorte_8,layer_RoderaOeste_9,layer_CalleJW_10,layer_CaminoAdoquinClubdePlaya_11,layer_CaminoadoquinJW_12,layer_CaminoadoquinAlmendros_13,layer_CaminoAdoquinGolondrinas_14]);
+        });
+        </script>
+    </body>
+</html>
